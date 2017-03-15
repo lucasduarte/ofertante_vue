@@ -1,5 +1,6 @@
 class Api::V1::OffersController < Api::V1::BaseController
   before_action :set_offer, only: [:show]
+  before_action :authenticate_api_user!, only: [:create]
 
   def index
     respond_with Offer.all
@@ -10,10 +11,21 @@ class Api::V1::OffersController < Api::V1::BaseController
   end
 
   def create
-    debugger
-    respond_with :api, :v1, Offer.create(offer_params)
+    offer = offer_params
+    offer[:user] = current_api_user
+
+    respond_with :api, :v1, Offer.create(offer)
+  end
+
+  def destroy
+    respond_with current_api_user.items.destroy(params[:id])
   end
   
+  def update
+    offer = current_api_user.offers.find(params[:id])
+    offer.update_attributes(offer_params)
+    respond_with offer, json: offer
+  end
   
   private
 
