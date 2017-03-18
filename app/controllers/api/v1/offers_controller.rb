@@ -1,6 +1,6 @@
 class Api::V1::OffersController < Api::V1::BaseController
   before_action :set_offer, only: [:show]
-  before_action :authenticate_api_user!, only: [:create]
+  before_action :authenticate_api_user!, only: [:create, :update, :destroy]
 
   def index
     respond_with Offer.all
@@ -34,7 +34,7 @@ class Api::V1::OffersController < Api::V1::BaseController
     end
 
     def offer_params
-      params.require(:offer).permit(:description, :url, :price, :comment)
+      params.require(:offer).permit(:description, :url, :price, :comment, :tag_list)
     end
       
 end
